@@ -1,5 +1,9 @@
 # allegro-project
 
+# TODO: Update
+
+# TODO: Tell user to change "ggl" to the name of their project
+
 Research project template for the Allegro lab.
 
 ## Starting a New Project

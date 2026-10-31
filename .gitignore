@@ -37,3 +37,4 @@ data/
 *.bin
 *.safetensors
 .env
+*.ckpt

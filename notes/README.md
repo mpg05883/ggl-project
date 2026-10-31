@@ -2,10 +2,9 @@
 
 ## Subdirectories
 
-- **writeups/** — Project formulations, reports, and planning documents.
-- **read/** — Summaries of papers, written by Claude for reference.
-- **discussions/** — Raw meeting notes. These are noisy and should not be read by Claude unless explicitly requested.
 - **other/** — Anything that doesn't fit the above categories.
+- **read/** — Summaries of papers, written by Claude for reference.
+- **writeups/** — Project formulations, reports, and planning documents.
 
 ## Purpose
 

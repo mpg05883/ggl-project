@@ -1,7 +1,8 @@
 """Example reusable module. Your shared training/evaluation logic goes here."""
 
 import argparse
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
+
 import torch
 
 
@@ -15,7 +16,9 @@ class Config:
 
 def run(config: Config):
     torch.manual_seed(config.seed)
-    print(f"Running with model={config.model_name}, lr={config.learning_rate}, bs={config.batch_size}")
+    print(
+        f"Running with model={config.model_name}, lr={config.learning_rate}, bs={config.batch_size}"
+    )
     print(f"CUDA available: {torch.cuda.is_available()}")
 
 

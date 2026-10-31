@@ -20,7 +20,7 @@ log_error() {
     echo "[${timestamp}] $*" >&2
 }
 
-# Activate the project's uv virtual environment.
+# Activate the project's uv environment.
 activate_uv_env() {
     local script_dir
     script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
