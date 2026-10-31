@@ -10,21 +10,38 @@ Project overview. They do not count as TODOs to fill in.
 
 ## Steps
 
-1. Read `AGENTS.md` and list every remaining `TODO:` line, ignoring the machinery lines.
+1. Read `AGENTS.md` and `README.md` and list every remaining `TODO:` line, ignoring the machinery lines.
 
-2. Ask the questions in three batches, not one per TODO. Use the AskUserQuestion tool if it is available; otherwise
+2. Ask the questions in four batches, not one per TODO. Use the AskUserQuestion tool if it is available; otherwise
    use plain numbered questions. Every question needs a "Skip / I don't know" option.
-   - Batch 1: the project name, and a 2-4 line overview of what the project is.
+   - Batch 1: the project name, a 2-4 line overview of what the project is, and the email for `#SBATCH --mail-user=`
+     (skip it if the project is local only).
    - Batch 2: the data and the main components (which datasets; which models or modules).
-   - Batch 3: project-specific gotchas and data-integrity rules (the file already has generic leakage examples; show
-     them as context), and whether the project needs a `scripts/` directory.
+   - Batch 3: compute and tracking.
+     - Where does it run: a cluster (which one) or local only? If a cluster, which partition and account should the
+       `cli/` scripts default to?
+     - Where do results, checkpoints and large outputs go (a persistent path)?
+     - Experiment tracker: keep Weights & Biases, use a different one (which), or none?
+   - Batch 4: project-specific gotchas and data-integrity rules (the file already has generic leakage examples; show
+     them as context), whether the project needs a `scripts/` directory, and whether to keep each *(default)* rule in
+     "Never do" and "Conventions" as written (list them and let the user change any).
 
 3. If an answer is skipped or "don't know", leave that TODO in place. Never invent answers or fill in
    plausible-sounding defaults.
 
-4. Write the answers into `AGENTS.md`: replace the matching TODOs, and update the Project overview and Project Layout
-   to match (for example, add `scripts/` to the layout if wanted, and remove the `TODO: add a scripts/ dir` note
-   either way once answered).
+4. Write the answers into `AGENTS.md` and `README.md`: replace the matching TODOs, and update the Project overview and
+   layout to match (for example, add `scripts/` if wanted, and remove the `TODO: add a scripts/ dir` note either way
+   once answered).
+   - Overview: write the README's one-paragraph description from the Batch 1 and 2 answers (what the project studies,
+     the data, the main components), keeping it consistent with the Project overview in `AGENTS.md`. If those answers
+     were skipped, leave the README TODO in place.
+   - Compute: if local only, delete the "Cluster rules" section from `AGENTS.md` and the `sbatch` and interactive-node
+     lines from the README. If a cluster was named, update the partition, account and resource defaults in the headers
+     of `cli/utils/start_interactive_*.sh` and `cli/<example>/run.sh`, and show those edits to the user.
+   - Mail: set `#SBATCH --mail-user=` in every `cli/**/run.sh` to the email given.
+   - Tracker: if not W&B, tell the user which files reference it (`src/ggl/utils/wandb.py`, its test, the `--real`
+     handling in `cli/` scripts) and ask before changing any of them.
+   - Remove the `(default)` marker from each rule the user confirmed, and delete any rule they declined.
 
 5. Rename `ggl` to the project name:
    - Derive a Python-safe package name from the project name: lowercase, letters, digits and underscores only, not
@@ -40,8 +57,10 @@ Project overview. They do not count as TODOs to fill in.
 
 7. Show the full `git diff` (and `git status` for new or renamed files).
 
-8. Cleanup, only if no non-machinery `TODO:` remains in `AGENTS.md`: delete `.claude/commands/init-project.md` (this
-   file), remove both machinery lines from `AGENTS.md`, and remove from `README.md` the `[!IMPORTANT]` callout under
-   the title and the whole "Starting a New Project" section (through the line before the next `##` heading). If any
-   TODOs remain, keep this file, both lines, and those README parts, and tell the user which TODOs are left. Also
-   mention TODOs in `README.md` and `cli/` scripts, which this command does not handle.
+8. Cleanup, in two parts:
+   - Always: remove from `README.md` the `[!IMPORTANT]` callout under the title and the whole "Starting a New Project"
+     section (through the line before the next `##` heading). Delete the example experiment folders
+     (`experiments/2026-01-01_example/`, `cli/2026-01-01_example/`) only if the user asks.
+   - Only if no non-machinery `TODO:` remains in `AGENTS.md`: delete `.claude/commands/init-project.md` (this file) and
+     remove both machinery lines from `AGENTS.md`. If any TODOs remain, keep this file and both lines, and tell the
+     user which TODOs are left, including any in `README.md` and `cli/` scripts.
