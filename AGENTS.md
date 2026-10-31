@@ -67,6 +67,8 @@ Skip this section if the project is local only.
 
 - Experiments: one `experiments/YYYY-MM-DD_<short-name>/` folder per experiment, with a `README.md` (setup, results,
   observations) and a results notebook. `experiments/README.md` holds only brief descriptions.
+- Experiment ideas are drafted in `notes/ideas/<short-name>.md` (hypothesis, variables, baselines, metrics, what result
+  would change our plans) and reviewed by the user before any code is scaffolded.
 - Don't rewrite old experiments; start a new folder. Bug fixes to old experiments are allowed *(default)*.
 - Reusable code goes in `src/ggl/`; runnable scripts use argparse. TODO: add a `scripts/` dir if the project needs one.
 - sbatch scripts for an experiment go in `cli/<experiment>/` and source `cli/utils/utils.sh`. Logs go under
@@ -76,14 +78,20 @@ Skip this section if the project is local only.
 - Experiment tracking defaults to Weights & Biases (`--real` turns it on, otherwise it is `disabled`). TODO: if this
   project uses a different tracker, or none, say so here and update `src/ggl/utils/wandb.py` and the `cli/` scripts.
 - Before tuning hyperparameters or writing sweep/tuning scripts, read `docs/tuning.md`.
+- Before designing an experiment or writing data-loading, preprocessing or model code, read `docs/datasets.md` (sources,
+  splits, preprocessing) and `docs/models.md` (checkpoints, configs). Take splits from there; never re-derive or guess
+  them. If a doc is missing, a stub, or doesn't cover what you need, ask the user rather than filling it in.
+- Keep those docs current: when you change a split, preprocessing step or model, update the doc in the same change. They
+  should describe what the code does (e.g. name the function that builds each split and its seed), not replace it.
 
 ## New-Experiment Checklist
 
-1. Create `experiments/YYYY-MM-DD_<short-name>/` with a `README.md` and a results notebook; copy the example
+1. Read `docs/datasets.md` and `docs/models.md`; ground the idea in `notes/ideas/<short-name>.md` in what exists there.
+2. Create `experiments/YYYY-MM-DD_<short-name>/` with a `README.md` and a results notebook; copy the example
    experiment as a starting point. `run.py` is optional.
-2. Mirror it in `cli/<experiment>/` with sbatch scripts that source `cli/utils/utils.sh`.
-3. Add a brief entry to `experiments/README.md`.
-4. Run it as a dev run first; use `--real` only after confirming with the user.
+3. Mirror it in `cli/<experiment>/` with sbatch scripts that source `cli/utils/utils.sh`.
+4. Add a brief entry to `experiments/README.md`.
+5. Run it as a dev run first; use `--real` only after confirming with the user.
 
 ## Gotchas
 

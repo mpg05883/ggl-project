@@ -73,6 +73,10 @@ uv run pytest
 Don't run heavy compute on login nodes. Always do a dev run before `--real`. The `data/` directory is gitignored and
 read-only; `cli/utils/download_dataset.sh` populates it.
 
+Document each dataset and model you use in `docs/` (e.g. `docs/datasets.md`, `docs/models.md`): source, version or
+checkpoint, how `data/` is populated, and for datasets the exact splits (sizes, how they were made, seeds) and any
+preprocessing. Claude Code reads these when scaffolding experiments, so keep them current.
+
 ## Project Structure
 
 ```text
@@ -82,8 +86,8 @@ experiments/       # One date-prefixed folder per experiment, plus an index READ
 cli/               # bash/sbatch scripts: per experiment, plus utils/ (setup, data download, interactive nodes)
 notebooks/         # Exploratory notebooks
 data/              # Datasets (gitignored, read-only)
-docs/              # Project guides (e.g. tuning.md)
-notes/             # Working notes: read/ paper summaries, writeups/ reports, other/, discussions/ (private)
+docs/              # Project guides: datasets (splits, preprocessing), models, tuning.md
+notes/             # Working notes: ideas/ experiment proposals, read/ paper summaries, writeups/ reports, other/, discussions/ (private)
 ```
 
 ## Experiments
@@ -95,6 +99,45 @@ new experiment rather than rewriting old ones, and add a brief entry to `experim
 Copy [`experiments/2026-01-01_example/`](experiments/2026-01-01_example) and
 [`cli/2026-01-01_example/`](cli/2026-01-01_example) as a starting point. They are examples only: delete them (and
 their entries in `experiments/README.md`) once you have your own experiments.
+
+## Example Workflow with Claude Code
+
+A typical loop from idea to results. Conventions (naming, layout, tracking) are in [`AGENTS.md`](AGENTS.md), which
+Claude Code reads automatically.
+
+1. **Draft the idea.** Ask Claude Code to write a short proposal in `notes/ideas/<short-name>.md`:
+
+   > Draft an experiment idea for <topic> in `notes/ideas/`. Check `docs/datasets.md` and `docs/models.md` for the
+   > available data, splits, and models. Include the hypothesis, variables, baselines, metrics, and what result would
+   > change our plans.
+
+   Read and edit it before moving on. This is the cheapest place to catch a bad design.
+
+2. **Scaffold the experiment.** Once you're happy with the idea:
+
+   > Create `experiments/YYYY-MM-DD_<short-name>/` from the idea in `notes/ideas/<short-name>.md`, following the
+   > example experiment. Add `run.py` and the matching sbatch script at `cli/YYYY-MM-DD_<short-name>/run.sh`, and add
+   > an entry to `experiments/README.md`.
+
+3. **Dev run.** Smoke-test locally or on an interactive node with tracking disabled, then submit a dev job:
+
+   ```bash
+   uv run python experiments/YYYY-MM-DD_<short-name>/run.py
+   sbatch --job-name=<name> cli/YYYY-MM-DD_<short-name>/run.sh
+   ```
+
+   Fix problems here, before spending compute on a real run.
+
+4. **Real run.** Once the dev run is clean:
+
+   ```bash
+   sbatch --job-name=<name> cli/YYYY-MM-DD_<short-name>/run.sh --real
+   ```
+
+5. **View results.** After the run finishes:
+
+   > Create a results notebook in `experiments/YYYY-MM-DD_<short-name>/` that loads the outputs of this run and plots
+   > <metrics>. Then fill in the Results and Observations sections of the experiment's `README.md`.
 
 ## Experiment Tracking
 
