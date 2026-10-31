@@ -3,7 +3,7 @@ from argparse import Namespace
 
 import pytest
 
-from chronosense.utils.wandb import init_run
+from ggl.utils.wandb import init_run
 
 
 @pytest.fixture(autouse=True)
@@ -25,9 +25,9 @@ def init_calls(monkeypatch, tmp_path):
         calls.append(kwargs)
         return kwargs
 
-    monkeypatch.setattr("chronosense.utils.wandb.wandb.init", fake_init)
+    monkeypatch.setattr("ggl.utils.wandb.wandb.init", fake_init)
     monkeypatch.setattr(
-        "chronosense.utils.wandb.resolve_dotenv_file", lambda: tmp_path / ".env"
+        "ggl.utils.wandb.resolve_dotenv_file", lambda: tmp_path / ".env"
     )
     return calls
 
@@ -146,9 +146,9 @@ class TestInitRunFailure:
                 raise RuntimeError("no network")
             return kwargs
 
-        monkeypatch.setattr("chronosense.utils.wandb.wandb.init", failing_init)
+        monkeypatch.setattr("ggl.utils.wandb.wandb.init", failing_init)
         monkeypatch.setattr(
-            "chronosense.utils.wandb.resolve_dotenv_file", lambda: tmp_path / ".env"
+            "ggl.utils.wandb.resolve_dotenv_file", lambda: tmp_path / ".env"
         )
 
         run = init_run(Namespace(wandb_mode="online"), job_type="forecast", name="m")

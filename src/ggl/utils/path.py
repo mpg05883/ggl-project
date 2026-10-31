@@ -9,7 +9,7 @@ def resolve_root_dir() -> Path:
     Returns:
         Path: The path to the project's root directory.
     """
-    return Path(__file__).resolve().parent.parent.parent
+    return Path(__file__).resolve().parent.parent.parent.parent
 
 
 def resolve_dotenv_file() -> Path:

@@ -4,6 +4,6 @@
 # Download the dataset. 
 #
 # Usage from the project's root directory:
-#   ./cli/utils/download_ltsf.sh
+#   ./cli/utils/download_dataset.sh
 
 set -e

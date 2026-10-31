@@ -1,61 +1,121 @@
-# Chronosense Project — Codex Instructions
+# ggl — Agent Instructions
+
+If this file still contains `TODO:` placeholders, tell the user to run `/init-project`; don't ask about them yourself.
+
+## Project overview
+
+TODO: 2-4 lines on what this project is, the data, and the main components.
+
+TODO: run /init-project to fill in this file and rename "ggl" (the placeholder project name) to the real one.
+
+## Never do
+
+- **NEVER modify anything in the repo-root `data/` directory.** Don't create, edit, move, rename or delete files there,
+  and don't run commands that write into it (including re-running download or preprocessing scripts) unless the user
+  explicitly asks. This covers only the root-level `data/`, not paths like `src/**/data/` or `experiments/*/results/`.
+  Exception: `cli/utils/download_dataset.sh` (and any future script that writes into `data/`) may run only when the
+  user explicitly asks.
+- Never commit `.env`.
+- Don't delete `results/` or `done.done` files.
+- Confirm before any real (non-dev, `--real`) run that logs to W&B.
+- Add dependencies with `uv add`, not by hand-editing `pyproject.toml`. Commit `uv.lock`.
+- Do NOT read files in `notes/discussions/` unless explicitly requested (private meeting notes). The rest of `notes/`
+  is shared context and fine to read.
+
+## Clarify before acting
+
+Don't make silent assumptions. For any non-trivial task, restate the goal in one or two sentences, then ask about
+what is ambiguous and would change what you build or run: outcome, scope (in/out), success criteria, constraints, and
+which files, data or experiments are affected.
+
+- Look things up first (repo, configs, scripts, docs); only ask what you couldn't determine.
+- Ask in one batch of numbered questions that can be answered in a few words, with likely options and a recommended
+  default where helpful. Keep following up until you could explain the task back with no guesses left; if a detail is
+  unresolved, say so rather than filling it in. You may proceed on the clear parts meanwhile.
+- Stop and ask before anything expensive, slow or hard to undo: large SLURM job arrays or GPU-heavy jobs, deleting or
+  overwriting files, changing dependencies, touching shared config. The rules under "Never do" and "Cluster" (`--real`
+  runs, `data/`, large arrays) still apply as written. Cheap dev runs (see the New-Experiment Checklist) don't need
+  a question.
+- Don't over-ask on trivial or fully specified tasks (a typo fix, an explicit command): just do them.
+- If the user can't be reached (unattended or scheduled run), do only the safe, reversible part, list every
+  assumption at the top of your final summary, and stop before the risky step.
+- When finished, list any assumptions you did make so they can be corrected.
 
 ## Environment
 
-- Yale YCRC **Misha** SLURM cluster (Wu Tsai Institute): <https://docs.ycrc.yale.edu/clusters/misha/>
-- Package manager: uv (NOT conda, NOT pip directly)
-- Python: managed by uv, pinned in pyproject.toml (>=3.11,<3.14)
-- Virtual env: `.venv/` at project root (managed by uv)
+- Runs on the Yale YCRC **Misha** SLURM cluster.
+- Package manager: uv (NOT conda, NOT pip directly). Python version: see `pyproject.toml`.
+- Virtual env: `.venv/` at the project root (managed by uv).
+- Secrets and local settings live in `.env` (gitignored), loaded by `load_env_vars` in `cli/utils/utils.sh`.
 
-## Cluster Info
+## Cluster
 
-- **Access:** SSH or Open OnDemand; accounts requested at research.computing.yale.edu
-- **Partitions:**
-
-  | Partition | Max walltime | Notes |
-  | ----------- | -------------- | ------- |
-  | `day` (default) | 24h | CPU batch jobs |
-  | `devel` | 6h | interactive CPU work (10 CPUs, 70G per user) |
-  | `week` | 7 days | long CPU jobs |
-  | `gpu` | 48h | H100, H200, A100, A40, L40S; 4 GPUs/node |
-  | `gpu_devel` | 6h | GPU debugging (1 A40; 4 CPUs, 32G per user) |
-  | `bigmem` | 24h | ~2TB RAM nodes |
-
-- **Default resources (if unspecified):** `--time=01:00:00 --nodes=1 --ntasks=1 --cpus-per-task=1 --mem-per-cpu=5120`
-- **Limits:** 4 simultaneous interactive instances; 200 job submissions per hour
-- **Storage (`/gpfs/radev`):** home 125GiB/user; project 1TiB/group (expandable to 4TiB); scratch 10TiB/group, files older than 60 days are purged, so keep important data/results in project
+- Before writing sbatch scripts, read `~/.claude/clusters/misha.md` if it exists; otherwise see the
+  [YCRC docs](https://docs.ycrc.yale.edu/clusters/misha/).
+- Don't run heavy compute on login nodes; use `sbatch` or the interactive launchers.
+- Ask before submitting large job arrays.
+- Store important outputs in project storage, not scratch (scratch purges old files).
 
 ## How to Run Things
 
 Run all commands from the repo root.
 
 ```bash
-./cli/utils/create_environment.sh                                # install uv (if needed) and create .venv
-uv sync                                                          # install dependencies
-uv run python experiments/<experiment>/run.py                    # run locally
-uv run pytest                                                    # run tests
-./cli/utils/download_sp500-pit.sh                                # download SP500-PIT data into data/
-sbatch experiments/01_baselines/cli/run_baseline.sh              # submit baseline array job
-sbatch experiments/01_baselines/cli/evaluate.sh                  # submit evaluation array job
+./cli/utils/create_environment.sh                          # install uv (if needed) and create .venv
+uv sync --extra dev                                        # install dependencies, including pytest and ruff
+uv run python experiments/<experiment>/run.py              # run an experiment locally
+sbatch --job-name=<name> cli/<experiment>/run.sh --real    # submit an experiment as a SLURM job
+./cli/utils/start_interactive_cpu_session.sh               # interactive CPU node
+./cli/utils/start_interactive_gpu_session.sh               # interactive GPU node
 ```
 
-Array jobs set `SLURM_ARRAY_TASK_ID` env var; experiments can read it via `os.environ.get("SLURM_ARRAY_TASK_ID")`.
+- `--real` in a `cli/<experiment>/*.sh` script turns on W&B (`online`); without it the run is a dev run (W&B
+  `disabled`). The header of each script documents its flags.
+
+### Lint and tests
+
+```bash
+uv run ruff check .                                        # lint
+uv run ruff format .                                       # format (line length 120)
+uv run pytest                                              # all tests
+uv run pytest tests/<path>/test_<module>.py -k <name>      # one test file, tests matching a name
+```
 
 ## Project Layout
-# TODO: Update for generic project template
-- `src/chronosense/` — shared library code for this project (`common.py`, `data.py`, `features.py`, `path.py`)
-- `src/allegro/` — leftover template code (`example.py`, `tracking.py`)
-- `experiments/` — numbered experiment folders (00_xxx/, 01_xxx/, ...), each with its scripts (e.g. `run.py`), `README.md`, and gitignored `results/`, `logs/`, `figures/`; an experiment may have its own `cli/` with sbatch/bash scripts
-- `cli/` — repo-level bash scripts: `cli/utils/` (environment setup, data downloads, shared `utils.sh` helpers such as `activate_uv_env`, `log_info`, `get_done_file`) and `cli/00_example/`
-- `data/` — datasets, e.g. `sp500-pit/` (gitignored)
-- `tests/` — pytest tests; `tests/chronosense/` mirrors `src/chronosense/` (e.g. `src/chronosense/data/preprocess.py` is tested in `tests/chronosense/data/test_preprocess.py`)
+
+- `src/ggl/` — reusable library code (currently `utils/path.py`, `utils/wandb.py`); `ggl` is the placeholder package name.
+- `tests/` — pytest; mirrors `src/` (`src/ggl/utils/wandb.py` is tested in `tests/ggl/utils/test_wandb.py`).
+- `experiments/` — date-prefixed folders (`YYYY-MM-DD_<short-name>/`); `experiments/README.md` indexes them.
+- `cli/` — bash/sbatch scripts: `cli/<experiment>/` per experiment, `cli/utils/` (environment setup, dataset download,
+  interactive-node launchers, shared `utils.sh` helpers such as `activate_uv_env`, `load_env_vars`, `log_info`,
+  `get_done_file`), `cli/tests/`.
+- `notebooks/` — exploratory notebooks.
+- `data/` — datasets. Gitignored (only `.gitkeep` is tracked). Read-only; see "Never do".
+- `docs/` — project guides for anyone working in the repo (currently `tuning.md`).
+- `notes/` — working notes shared as context for Claude: `read/` paper summaries, `writeups/` project formulations and
+  reports, `other/` anything else, `discussions/` private meeting notes (off limits, see "Never do").
 
 ## Conventions
 
-- Experiments: numbered folders in `experiments/` (00_xxx/, 01_xxx/, ...) each with a `run.py`. Create new folders, don't edit old ones.
-- Each experiment folder should have a `README.md` with detailed setup, results, and observations. The top-level `experiments/README.md` should only contain brief descriptions of each experiment.
-- Reusable code goes in `src/chronosense/` with argparse for flexibility
-- Bash/sbatch scripts for an experiment go in `experiments/<experiment>/cli/` and source the `utils.sh` helpers; job logs go under `experiments/<experiment>/logs/` (`job_name=<name>/job_id=<id>[/array_task_id=<n>]/done.done` via `get_done_file`)
-- Python style: ruff, line length 120
-- Tracking: wandb (disable with `WANDB_MODE=disabled`)
-- Do NOT read files in `notes/discussions/` (meeting notes) unless explicitly requested by the user
+- Experiments: one `experiments/YYYY-MM-DD_<short-name>/` folder per experiment, with a `README.md` (setup, results,
+  observations) and a results notebook. `experiments/README.md` holds only brief descriptions.
+- Don't rewrite old experiments; start a new folder. Bug fixes to old experiments are allowed (default; change if you
+  prefer otherwise).
+- Reusable code goes in `src/`; runnable scripts use argparse. TODO: add a `scripts/` dir if the project needs one.
+- sbatch scripts for an experiment go in `cli/<experiment>/` and source `cli/utils/utils.sh`. SLURM logs go under
+  `experiments/<experiment>/logs/` (`%x/%j/{out,err}.{out,err}`, or `%x/%A/...` for arrays), plus a `done.done` marker
+  written via `get_done_file`.
+- Python style: ruff, line length 120. Tracking: wandb (disable with `WANDB_MODE=disabled`).
+- Before tuning hyperparameters or writing sweep/tuning scripts, read `docs/tuning.md`.
+
+## New-Experiment Checklist
+
+1. Create `experiments/YYYY-MM-DD_<short-name>/` with a `README.md` and a results notebook; copy the example
+   experiment as a starting point. `run.py` is optional.
+2. Mirror it in `cli/<experiment>/` with sbatch scripts that source `cli/utils/utils.sh`.
+3. Add a brief entry to `experiments/README.md`.
+4. Run it as a dev run first; use `--real` only after confirming with the user.
+
+## Gotchas
+
+TODO: project-specific data-integrity rules.
