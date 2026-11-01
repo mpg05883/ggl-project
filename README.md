@@ -105,9 +105,9 @@ their entries in `experiments/README.md`) once you have your own experiments.
 A typical loop from idea to results. Conventions (naming, layout, tracking) are in [`AGENTS.md`](AGENTS.md), which
 Claude Code reads automatically.
 
-1. **Draft the idea.** Ask Claude Code to write a short proposal in `notes/ideas/<short-name>.md`:
+1. **Draft the idea.** Ask Claude Code to write a short proposal in `notes/writeups/<short-name>.md`:
 
-   > Draft an experiment idea for <topic> in `notes/ideas/`. Check `docs/datasets.md` and `docs/models.md` for the
+   > Draft an experiment idea for <topic> in `notes/writeups/`. Check `docs/datasets.md` and `docs/models.md` for the
    > available data, splits, and models. Include the hypothesis, variables, baselines, metrics, and what result would
    > change our plans.
 
@@ -115,7 +115,7 @@ Claude Code reads automatically.
 
 2. **Scaffold the experiment.** Once you're happy with the idea:
 
-   > Create `experiments/YYYY-MM-DD_<short-name>/` from the idea in `notes/ideas/<short-name>.md`, following the
+   > Create `experiments/YYYY-MM-DD_<short-name>/` from the idea in `notes/writeups/<short-name>.md`, following the
    > example experiment. Add `run.py` and the matching sbatch script at `cli/YYYY-MM-DD_<short-name>/run.sh`, and add
    > an entry to `experiments/README.md`.
 
