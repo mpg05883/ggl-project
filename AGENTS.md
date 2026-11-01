@@ -79,7 +79,7 @@ Skip this section if the project is local only.
 - Python style: ruff, line length 120.
 - Experiment tracking defaults to Weights & Biases (`--real` turns it on, otherwise it is `disabled`). TODO: if this
   project uses a different tracker, or none, say so here and update `src/ggl/utils/wandb.py` and the `cli/` scripts.
-- Before tuning hyperparameters or writing sweep/tuning scripts, read `docs/tuning.md`.
+- Before tuning hyperparameters or writing sweep/tuning scripts, read `docs/hyperparameter_tuning.md`.
 - Before designing an experiment or writing data-loading, preprocessing or model code, read `docs/datasets.md` (sources,
   splits, preprocessing) and `docs/models.md` (checkpoints, configs). Take splits from there; never re-derive or guess
   them. If a doc is missing, a stub, or doesn't cover what you need, ask the user rather than filling it in.

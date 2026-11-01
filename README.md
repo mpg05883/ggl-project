@@ -86,7 +86,7 @@ experiments/       # One date-prefixed folder per experiment, plus an index READ
 cli/               # bash/sbatch scripts: per experiment, plus utils/ (setup, data download, interactive nodes)
 notebooks/         # Exploratory notebooks
 data/              # Datasets (gitignored, read-only)
-docs/              # Project guides: datasets (splits, preprocessing), models, tuning.md
+docs/              # Project guides: datasets (splits, preprocessing), models, hyperparameter_tuning.md
 notes/             # Working notes: ideas/ experiment proposals, read/ paper summaries, writeups/ reports, other/, discussions/ (private)
 ```
 
@@ -198,7 +198,7 @@ export WANDB_MODE=disabled
 
 TODO: if this project uses a different tracker, or none, update this section.
 
-For hyperparameter tuning, see [`docs/tuning.md`](docs/tuning.md).
+For hyperparameter tuning, see [`docs/hyperparameter_tuning.md`](docs/hyperparameter_tuning.md).
 
 ## For AI Agents
 
