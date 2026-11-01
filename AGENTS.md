@@ -69,8 +69,8 @@ Skip this section if the project is local only.
 
 - Experiments: one `experiments/YYYY-MM-DD_<short-name>/` folder per experiment, with a `README.md` (setup, results,
   observations) and a results notebook. `experiments/README.md` holds only brief descriptions.
-- Experiment ideas are drafted in `notes/ideas/<short-name>.md` (hypothesis, variables, baselines, metrics, what result
-  would change our plans) and reviewed by the user before any code is scaffolded.
+- Experiment ideas are drafted in `notes/writeups/<short-name>.md` (hypothesis, variables, baselines, metrics, what
+  result would change our plans) and reviewed by the user before any code is scaffolded.
 - Don't rewrite old experiments; start a new folder. Bug fixes to old experiments are allowed *(default)*.
 - Reusable code goes in `src/ggl/`; runnable scripts use argparse. TODO: add a `scripts/` dir if the project needs one.
 - sbatch scripts for an experiment go in `cli/<experiment>/` and source `cli/utils/utils.sh`. Logs go under
@@ -86,9 +86,25 @@ Skip this section if the project is local only.
 - Keep those docs current: when you change a split, preprocessing step or model, update the doc in the same change. They
   should describe what the code does (e.g. name the function that builds each split and its seed), not replace it.
 
+## Git conventions
+
+- Branch names: `<type>/<short-description>`. Lowercase, hyphen-separated, 2-4 words. No dates or run IDs (those go in
+  commit messages, tags, or the experiment tracker).
+- Types: `exp` (experiments: new runs, sweeps, ablations, hypothesis tests), `feat` (new functionality), `fix` (bug
+  fixes), `refactor` (restructuring with no behavior change), `docs` (README, AGENTS.md, other documentation), `chore`
+  (dependency bumps, config, tooling).
+- Multi-person repos may add a collaborator prefix (`mike/exp/lora-rank-sweep`); skip it for solo projects.
+- Keep `main` always runnable. Never put half-finished experiment code on `main`.
+- `exp/` branches: create from `main`. Name the question or variable being tested, not the outcome
+  (`exp/lora-rank-sweep`, not `exp/best-lora-config`). To conclude, either merge the useful code into `main` (via a `feat/` or `refactor/`
+  branch if it needs cleanup), or tag the final commit `archive/exp/<name>` and delete the branch. Results and configs
+  must be reproducible from the tagged commit.
+- Full lifecycle and examples: "Git Workflow" in `README.md`.
+
 ## New-Experiment Checklist
 
-1. Read `docs/datasets.md` and `docs/models.md`; ground the idea in `notes/ideas/<short-name>.md` in what exists there.
+1. Read `docs/datasets.md` and `docs/models.md`; ground the idea in `notes/writeups/<short-name>.md` in what exists
+   there.
 2. Create `experiments/YYYY-MM-DD_<short-name>/` with a `README.md` and a results notebook; copy the example
    experiment as a starting point. `run.py` is optional.
 3. Mirror it in `cli/<experiment>/` with sbatch scripts that source `cli/utils/utils.sh`.
