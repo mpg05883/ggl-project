@@ -62,6 +62,8 @@ Skip this section if the project is local only.
 
 - Don't run heavy compute on login nodes; use `sbatch` or the interactive launchers in `cli/utils/`.
 - Ask before submitting large job arrays.
+- Cluster-specific setup (SLURM conventions, storage paths, module/env quirks) lives in `docs/clusters/<name>.md`.
+  Before submitting or configuring any job, read the file for the cluster you're on (e.g. `docs/clusters/misha.md`).
 
 ## Conventions
 
