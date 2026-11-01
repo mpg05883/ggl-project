@@ -86,7 +86,7 @@ experiments/       # One date-prefixed folder per experiment, plus an index READ
 cli/               # bash/sbatch scripts: per experiment, plus utils/ (setup, data download, interactive nodes)
 notebooks/         # Exploratory notebooks
 data/              # Datasets (gitignored, read-only)
-docs/              # Project guides: datasets (splits, preprocessing), models, tuning.md
+docs/              # Project guides: datasets (splits, preprocessing), models, hyperparameter_tuning.md
 notes/             # Working notes: ideas/ experiment proposals, read/ paper summaries, writeups/ reports, other/, discussions/ (private)
 ```
 
@@ -99,6 +99,54 @@ new experiment rather than rewriting old ones, and add a brief entry to `experim
 Copy [`experiments/2026-01-01_example/`](experiments/2026-01-01_example) and
 [`cli/2026-01-01_example/`](cli/2026-01-01_example) as a starting point. They are examples only: delete them (and
 their entries in `experiments/README.md`) once you have your own experiments.
+
+## Git Workflow
+
+Branches are named `<type>/<short-description>`: lowercase, hyphen-separated, 2-4 words. Don't put dates or run IDs in
+branch names; those belong in commit messages, tags, or your experiment tracker. In multi-person repos, prefix your name
+(`mike/exp/lora-rank-sweep`); skip the prefix for solo projects.
+
+| Type | Use for |
+|------|---------|
+| `exp` | Experiments: new runs, sweeps, ablations, hypothesis tests |
+| `feat` | New functionality in the codebase |
+| `fix` | Bug fixes |
+| `refactor` | Restructuring with no behavior change |
+| `docs` | README, `AGENTS.md`, and other documentation |
+| `chore` | Dependency bumps, config, tooling |
+
+Examples: `exp/lora-rank-sweep`, `feat/lr-warmup-scheduler`, `fix/dataloader-seed`, `chore/bump-torch`.
+
+Keep `main` always runnable: no half-finished experiment code on `main`. The agent-facing version of these rules is in
+[`AGENTS.md`](AGENTS.md).
+
+### Experiment branches
+
+`exp/` branches are distinct because they live longer, diverge further from `main`, and are often exploratory, so they
+have their own lifecycle. Name them after the question or variable being tested, not the outcome: `exp/lora-rank-sweep`,
+not `exp/best-lora-config`. (The experiment *folder*, `experiments/YYYY-MM-DD_<short-name>/`, still carries a date; the
+branch name does not.)
+
+1. **Create** the branch from `main`:
+
+   ```bash
+   git switch main && git switch -c exp/lora-rank-sweep
+   ```
+
+2. **Run** the experiment on the branch: scaffold the folder, iterate, do dev runs, then real runs.
+3. **Conclude** in one of two ways:
+   - **Keep the useful code.** Merge it into `main`. If the changes need cleanup first, move them onto a `feat/` or
+     `refactor/` branch and merge that instead, so `main` only gets finished code.
+   - **Archive.** Tag the final commit and delete the branch:
+
+     ```bash
+     git tag archive/exp/lora-rank-sweep
+     git branch -D exp/lora-rank-sweep
+     git push origin archive/exp/lora-rank-sweep   # if you use a remote
+     ```
+
+Results and configs for an experiment should be reproducible from the tagged (or merged) commit, so commit the configs
+and seeds, and note the commit hash wherever you record the results.
 
 ## Example Workflow with Claude Code
 
@@ -150,7 +198,7 @@ export WANDB_MODE=disabled
 
 TODO: if this project uses a different tracker, or none, update this section.
 
-For hyperparameter tuning, see [`docs/tuning.md`](docs/tuning.md).
+For hyperparameter tuning, see [`docs/hyperparameter_tuning.md`](docs/hyperparameter_tuning.md).
 
 ## For AI Agents
 
