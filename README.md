@@ -155,7 +155,7 @@ Claude Code reads automatically.
 
 1. **Draft the idea.** Ask Claude Code to write a short proposal in `notes/writeups/<short-name>.md`:
 
-   > Draft an experiment idea for <topic> in `notes/writeups/`. Check `docs/datasets.md` and `docs/models.md` for the
+   > Draft an experiment idea for `<topic>` in `notes/writeups/`. Check `docs/datasets.md` and `docs/models.md` for the
    > available data, splits, and models. Include the hypothesis, variables, baselines, metrics, and what result would
    > change our plans.
 
