@@ -14,7 +14,7 @@ Project overview. They do not count as TODOs to fill in.
 
 2. Ask the questions in four batches, not one per TODO. Use the AskUserQuestion tool if it is available; otherwise
    use plain numbered questions. Every question needs a "Skip / I don't know" option.
-   - Batch 1: the project name, a 2-4 line overview of what the project is, and the email for `#SBATCH --mail-user=`
+   - Batch 1: the project name (recommended default: the GitHub repo name, see step 5), a 2-4 line overview of what the project is, and the email for `#SBATCH --mail-user=`
      (skip it if the project is local only).
    - Batch 2: the data and the main components (which datasets; which models or modules).
    - Batch 3: compute and tracking.
@@ -44,8 +44,13 @@ Project overview. They do not count as TODOs to fill in.
    - Remove the `(default)` marker from each rule the user confirmed, and delete any rule they declined.
 
 5. Rename `ggl` to the project name:
-   - Derive a Python-safe package name from the project name: lowercase, letters, digits and underscores only, not
-     starting with a digit, not a Python keyword. Confirm it with the user before renaming anything.
+   - Default package name: the GitHub repo's name, lowercased, with spaces replaced by underscores (repo `GIFT Eval`
+     gives `gift_eval`). Get the repo name from `gh repo view --json name -q .name`, or failing that from the
+     `origin` remote URL (`git remote get-url origin`, last path segment without `.git`). If neither works, derive it
+     from the project name given in Batch 1 the same way.
+   - Make sure the result is Python-safe: letters, digits and underscores only (replace any other character with an
+     underscore), not starting with a digit, not a Python keyword. Confirm it with the user before renaming anything,
+     offering the default as the recommended option.
    - Rename every whole-word `ggl`: `src/ggl/`, `tests/ggl/`, `cli/tests/ggl.sh` (use `git mv`), imports,
      `pyproject.toml` (project name and the hatch `packages` entry), `AGENTS.md` (title and layout), `README.md`,
      and the files under `experiments/`. Find them with `grep -rIlw ggl . --exclude-dir=.git --exclude-dir=.venv
