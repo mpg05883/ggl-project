@@ -1,4 +1,4 @@
-"""PostToolUse hook: fail when an edited Python file breaks the 80-char limit.
+"""PostToolUse hook: fail when an edited Python file breaks the 79-char limit.
 
 Claude Code passes the tool call as JSON on stdin. Exit code 2 sends the
 ruff output back to Claude so it can fix the violations in the same turn.
@@ -59,7 +59,7 @@ def main() -> int:
         return 0
     print(
         f"Line-length violations in {path} "
-        f"(limit 80; rewrap, don't shorten):\n{output}",
+        f"(limit 79; rewrap, don't shorten):\n{output}",
         file=sys.stderr,
     )
     return 2

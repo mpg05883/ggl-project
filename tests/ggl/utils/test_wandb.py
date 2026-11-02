@@ -147,7 +147,7 @@ class TestInitRunFailure:
     """Tests for `init_run` when W&B cannot start a run."""
 
     def test_falls_back_to_a_disabled_run(self, monkeypatch, tmp_path):
-        """A failure to start a run never raises. A disabled run is returned."""
+        """A failure to start a run never raises; a disabled run is used."""
         calls: list[dict] = []
 
         def failing_init(**kwargs):
