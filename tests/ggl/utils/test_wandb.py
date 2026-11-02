@@ -35,7 +35,9 @@ def init_calls(monkeypatch, tmp_path):
 class TestInitRunDisabled:
     """Tests for `init_run` when tracking is off."""
 
-    @pytest.mark.parametrize("args", [Namespace(), Namespace(wandb_mode="disabled")])
+    @pytest.mark.parametrize(
+        "args", [Namespace(), Namespace(wandb_mode="disabled")]
+    )
     def test_returns_a_disabled_run(self, init_calls, args):
         """Without `wandb_mode` (or with "disabled") a disabled run is made."""
         run = init_run(args, job_type="forecast", name="model")
@@ -59,17 +61,23 @@ class TestInitRunEnabled:
             'WANDB_PROJECT="ChronoSense"\nWANDB_ENTITY="mpg48-yale"\n'
         )
 
-        init_run(Namespace(wandb_mode="offline"), job_type="forecast", name="model")
+        init_run(
+            Namespace(wandb_mode="offline"), job_type="forecast", name="model"
+        )
 
         assert init_calls[0]["project"] == "ChronoSense"
         assert init_calls[0]["entity"] == "mpg48-yale"
 
-    def test_environment_wins_over_dotenv(self, init_calls, tmp_path, monkeypatch):
+    def test_environment_wins_over_dotenv(
+        self, init_calls, tmp_path, monkeypatch
+    ):
         """Variables already set in the environment are not overridden."""
         (tmp_path / ".env").write_text("WANDB_PROJECT=from-file\n")
         monkeypatch.setenv("WANDB_PROJECT", "from-env")
 
-        init_run(Namespace(wandb_mode="online"), job_type="forecast", name="model")
+        init_run(
+            Namespace(wandb_mode="online"), job_type="forecast", name="model"
+        )
 
         assert init_calls[0]["project"] == "from-env"
 
@@ -109,7 +117,9 @@ class TestInitRunEnabled:
 
     def test_no_group_without_an_experiment(self, init_calls):
         """With neither a group nor an experiment, no group is set."""
-        init_run(Namespace(wandb_mode="online"), job_type="forecast", name="model")
+        init_run(
+            Namespace(wandb_mode="online"), job_type="forecast", name="model"
+        )
 
         assert init_calls[0]["group"] is None
 
@@ -151,7 +161,9 @@ class TestInitRunFailure:
             "ggl.utils.wandb.resolve_dotenv_file", lambda: tmp_path / ".env"
         )
 
-        run = init_run(Namespace(wandb_mode="online"), job_type="forecast", name="m")
+        run = init_run(
+            Namespace(wandb_mode="online"), job_type="forecast", name="m"
+        )
 
         assert run == {"mode": "disabled"}
         assert calls[-1] == {"mode": "disabled"}

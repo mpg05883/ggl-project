@@ -76,7 +76,9 @@ Skip this section if the project is local only.
 - sbatch scripts for an experiment go in `cli/<experiment>/` and source `cli/utils/utils.sh`. Logs go under
   `experiments/<experiment>/logs/`, plus a `done.done` marker written via `get_done_file`.
 - Tests mirror `src/` (`src/ggl/utils/wandb.py` is tested in `tests/ggl/utils/test_wandb.py`).
-- Python style: ruff, line length 120.
+- Code style: ruff, line length 80. Comments and docstrings must wrap at 80 characters; rewrap the text instead of
+  shortening its meaning. This is enforced by ruff (E501, W505) and a PostToolUse hook
+  (`.claude/hooks/check_line_length.py`); fix any hook violation before continuing.
 - Experiment tracking defaults to Weights & Biases (`--real` turns it on, otherwise it is `disabled`). TODO: if this
   project uses a different tracker, or none, say so here and update `src/ggl/utils/wandb.py` and the `cli/` scripts.
 - Before tuning hyperparameters or writing sweep/tuning scripts, read `docs/hyperparameter_tuning.md`.

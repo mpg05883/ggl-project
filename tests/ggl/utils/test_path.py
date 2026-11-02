@@ -58,11 +58,16 @@ class TestResolveResultsDir:
 
     def test_with_subdirs(self, fake_root):
         result = resolve_results_dir("exp", ["a", "b"])
-        assert result == fake_root / "experiments" / "exp" / "results" / "a" / "b"
+        assert (
+            result == fake_root / "experiments" / "exp" / "results" / "a" / "b"
+        )
         assert result.is_dir()
 
     def test_empty_subdirs_is_results_dir(self, fake_root):
-        assert resolve_results_dir("exp", []) == fake_root / "experiments" / "exp" / "results"
+        assert (
+            resolve_results_dir("exp", [])
+            == fake_root / "experiments" / "exp" / "results"
+        )
 
     def test_existing_directory_and_contents_are_kept(self, fake_root):
         existing = fake_root / "experiments" / "exp" / "results"

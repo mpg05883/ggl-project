@@ -30,7 +30,9 @@ def resolve_data_dir() -> Path:
     return resolve_root_dir() / "data"
 
 
-def resolve_results_dir(experiment: str, subdirs: list[str] | None = None) -> Path:
+def resolve_results_dir(
+    experiment: str, subdirs: list[str] | None = None
+) -> Path:
     """Resolve the path to the results directory for the given experiment.
     Optionally, specify any subdirectories in the experiment's results
     directory to resolve the path to.

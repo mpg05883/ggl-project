@@ -2,7 +2,8 @@
 PyTorch Lightning.
 
 Usage:
-    uv run python experiments/2026-01-01_example/run.py --seed 0 --wandb-mode offline
+    uv run python experiments/2026-01-01_example/run.py --seed 0 \
+        --wandb-mode offline
 """
 
 import argparse
@@ -145,11 +146,15 @@ def main(args: argparse.Namespace) -> None:
     logging.basicConfig(level=args.level, format=args.format)
     logger = logging.getLogger(__name__)
 
-    dataset = build_dummy_dataset(args.num_samples, args.true_weight, args.true_bias)
+    dataset = build_dummy_dataset(
+        args.num_samples, args.true_weight, args.true_bias
+    )
     loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True)
     model = LinearRegressor(lr=args.lr)
 
-    array_id = os.environ.get("SLURM_ARRAY_TASK_ID")  # None if not a SLURM array
+    array_id = os.environ.get(
+        "SLURM_ARRAY_TASK_ID"
+    )  # None if not a SLURM array
 
     run = init_run(
         args,
@@ -180,12 +185,15 @@ def main(args: argparse.Namespace) -> None:
     weight = model.linear.weight.item()
     bias = model.linear.bias.item()
     logger.info(
-        f"learned weight={weight:.4f} (true {args.true_weight}), bias={bias:.4f} (true {args.true_bias})"
+        f"learned weight={weight:.4f} (true {args.true_weight}), "
+        f"bias={bias:.4f} (true {args.true_bias})"
     )
     logger.info(f"final loss={trainer.callback_metrics['loss']:.6f}")
 
     results_dir = resolve_results_dir(args.experiment)
-    pd.DataFrame(loss_recorder.losses).to_csv(results_dir / "losses.csv", index=False)
+    pd.DataFrame(loss_recorder.losses).to_csv(
+        results_dir / "losses.csv", index=False
+    )
     results = {
         "learned_weight": weight,
         "learned_bias": bias,
