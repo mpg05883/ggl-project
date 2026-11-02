@@ -36,7 +36,7 @@ would write the results to a different folder. `run.sh` passes it for you. `--re
 
 ## Results
 
-Analysis in `results.ipynb` (loss curve and a one-row table of the parameters).
+Analysis in `view_results.ipynb` (loss curve and a one-row table of the parameters).
 
 | learned weight | true weight | learned bias | true bias | final loss |
 | -------------- | ------------ | ----------- | --------- | ---------- |
