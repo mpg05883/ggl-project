@@ -25,5 +25,21 @@ fi
 # the dependencies from pyproject.toml and uv.lock
 uv sync
 
+# Create local settings without overwriting existing credentials.
+if [ ! -e .env ]; then
+    cat > .env <<'EOF'
+WANDB_API_KEY=""
+WANDB_CACHE_DIR=./wandb/cache
+WANDB_CONFIG_DIR=./wandb/config
+WANDB_DATA_DIR=./wandb/data
+WANDB_ARTIFACTS_DIR=./wandb/artifacts
+WANDB_DIR=./wandb
+WANDB_ENTITY=""
+WANDB_PROJECT=""
+
+HF_TOKEN=""
+EOF
+fi
+
 echo -e "\nCreated uv environment"
 echo "Activate it with: source .venv/bin/activate"
