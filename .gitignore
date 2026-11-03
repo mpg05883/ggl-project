@@ -19,8 +19,10 @@ cache/
 slurm_logs/
 wandb/
 
-# Experiment logs
+# Experiment outputs (results/logs/figures inside experiment folders)
+experiments/*/results/
 experiments/*/logs/
+experiments/*/figures/
 
 # OS
 .DS_Store
