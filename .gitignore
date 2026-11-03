@@ -29,7 +29,7 @@ experiments/*/figures/
 Thumbs.db
 
 # Data (add specific patterns as needed)
-data/
+/data/
 *.pt
 *.bin
 *.safetensors
