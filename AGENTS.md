@@ -69,6 +69,8 @@ Skip this section if the project is local only.
 
 - Experiments: one `experiments/YYYY-MM-DD_<short-name>/` folder per experiment, with a `README.md` (setup, results,
   observations) and a results notebook. `experiments/README.md` holds only brief descriptions.
+- When writing each experiment's `view_results.ipynb`, pull results from
+  Weights & Biases (wandb).
 - Experiment ideas are drafted in `notes/writeups/<short-name>.md` (hypothesis, variables, baselines, metrics, what
   result would change our plans) and reviewed by the user before any code is scaffolded.
 - Don't rewrite old experiments; start a new folder. Bug fixes to old experiments are allowed *(default)*.
