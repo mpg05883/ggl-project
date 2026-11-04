@@ -12,18 +12,44 @@
 # with columns: array_task_id,message
 #
 # Usage:
-#   cli/utils/summarize_errors.sh <experiment_name> <job_id>
+#   cli/utils/create_error_dump.sh --experiment <name> --job_id <id>
 #
 # Example:
-#   cli/utils/summarize_errors.sh 2026-11-02_reproduce_shen_et_al 31827680
+#   cli/utils/create_error_dump.sh \
+#       --experiment 2026-11-02_reproduce_shen_et_al --job_id 31827680
 
-if [[ $# -ne 2 ]]; then
-    echo "Usage: $0 <experiment_name> <job_id>" >&2
+usage() {
+    echo "Usage: $0 --experiment <experiment_name> --job_id <job_id>" >&2
+}
+
+experiment=""
+job_id=""
+while (( $# > 0 )); do
+    case "$1" in
+        --experiment|--job_id)
+            if [[ $# -lt 2 || -z "$2" || "$2" == --* ]]; then
+                echo "Missing value for $1" >&2
+                usage
+                exit 1
+            fi
+            case "$1" in
+                --experiment) experiment="$2" ;;
+                --job_id) job_id="$2" ;;
+            esac
+            shift 2
+            ;;
+        *)
+            echo "Unknown argument: $1" >&2
+            usage
+            exit 1
+            ;;
+    esac
+done
+
+if [[ -z "$experiment" || -z "$job_id" ]]; then
+    usage
     exit 1
 fi
-
-experiment="$1"
-job_id="$2"
 
 # Unmatched globs expand to nothing.
 shopt -s nullglob
