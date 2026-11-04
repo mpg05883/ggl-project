@@ -9,7 +9,6 @@ Usage:
 import argparse
 import json
 import logging
-import os
 import tempfile
 from pathlib import Path
 
@@ -21,7 +20,7 @@ from torch import nn
 from torch.utils.data import DataLoader, TensorDataset
 
 from ggl.utils.path import resolve_results_dir
-from ggl.utils.wandb import init_run
+from ggl.utils.wandb import create_wandb_config, init_run
 
 
 def build_dummy_dataset(
@@ -147,26 +146,28 @@ def main(args: argparse.Namespace) -> None:
     logger = logging.getLogger(__name__)
 
     dataset = build_dummy_dataset(
-        args.num_samples, args.true_weight, args.true_bias
+        args.num_samples,
+        args.true_weight,
+        args.true_bias,
     )
-    loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True)
+    loader = DataLoader(
+        dataset,
+        batch_size=args.batch_size,
+        shuffle=True,
+    )
     model = LinearRegressor(lr=args.lr)
-
-    array_id = os.environ.get(
-        "SLURM_ARRAY_TASK_ID"
-    )  # None if not a SLURM array
 
     run = init_run(
         args,
         job_type="training",
         name="linear-regression-example",
         config={
-            "array_id": array_id,
             "seed": args.seed,
             "true_weight": args.true_weight,
             "true_bias": args.true_bias,
             "epochs": args.epochs,
             "lr": args.lr,
+            **create_wandb_config(),
         },
     )
 
@@ -191,9 +192,7 @@ def main(args: argparse.Namespace) -> None:
     logger.info(f"final loss={trainer.callback_metrics['loss']:.6f}")
 
     results_dir = resolve_results_dir(args.experiment)
-    pd.DataFrame(loss_recorder.losses).to_csv(
-        results_dir / "losses.csv", index=False
-    )
+    pd.DataFrame(loss_recorder.losses).to_csv(results_dir / "losses.csv", index=False)
     results = {
         "learned_weight": weight,
         "learned_bias": bias,

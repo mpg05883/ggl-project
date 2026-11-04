@@ -73,3 +73,30 @@ def init_run(
         logger.warning(f"W&B tracking disabled: could not start a run ({e})")
         os.environ["WANDB_MODE"] = "disabled"
         return wandb.init(mode="disabled")
+
+
+def create_wandb_config() -> dict[str, Any]:
+    """Create a W&B config dictionary from the SLURM environment variables.
+
+    Returns:
+        dict[str, Any]: The W&B config dictionary.
+    """
+    job_id = os.environ.get("SLURM_JOB_ID")
+    job_name = os.environ.get("SLURM_JOB_NAME")
+    array_job_id = os.environ.get("SLURM_ARRAY_JOB_ID")
+    array_task_id = os.environ.get("SLURM_ARRAY_TASK_ID")
+
+    # Convert SLURM environment variables to integers if they are not None.
+    if job_id is not None:
+        job_id = int(job_id)
+    if array_job_id is not None:
+        array_job_id = int(array_job_id)
+    if array_task_id is not None:
+        array_task_id = int(array_task_id)
+
+    return {
+        "slurm_job_id": job_id,
+        "slurm_job_name": job_name,
+        "slurm_array_job_id": array_job_id,
+        "slurm_array_task_id": array_task_id,
+    }
