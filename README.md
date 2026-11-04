@@ -46,6 +46,10 @@ Assumes `/init-project` has been run. Run all commands from the repo root.
 uv sync --extra dev                 # install dependencies, including pytest and ruff
 ```
 
+`uv sync` installs the local project package in editable mode, so changes under
+`src/` take effect without reinstalling. This also applies after renaming the
+project during `/init-project`.
+
 Create a `.env` file in the repo root for secrets and local settings (e.g. your W&B API key). It is gitignored and
 loaded by `load_env_vars` in `cli/utils/utils.sh`.
 

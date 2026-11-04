@@ -22,7 +22,8 @@ if ! command -v uv >/dev/null 2>&1; then
 fi
 
 # Create .venv/ with the Python version from .python-version and install
-# the dependencies from pyproject.toml and uv.lock
+# the dependencies from pyproject.toml and uv.lock. uv sync also installs the
+# local project in editable mode, using its current name from pyproject.toml.
 uv sync
 
 # Create local settings without overwriting existing credentials.
