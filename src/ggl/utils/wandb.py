@@ -75,11 +75,11 @@ def init_run(
         return wandb.init(mode="disabled")
 
 
-def create_wandb_config() -> dict[str, Any]:
-    """Create a W&B config dictionary from the SLURM environment variables.
+def create_slurm_config() -> dict[str, Any]:
+    """Create a W&B config containing SLURM environment variables.
 
     Returns:
-        dict[str, Any]: The W&B config dictionary.
+        dict[str, Any]: The W&B config.
     """
     job_id = os.environ.get("SLURM_JOB_ID")
     job_name = os.environ.get("SLURM_JOB_NAME")

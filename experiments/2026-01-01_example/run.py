@@ -20,7 +20,7 @@ from torch import nn
 from torch.utils.data import DataLoader, TensorDataset
 
 from ggl.utils.path import resolve_results_dir
-from ggl.utils.wandb import create_wandb_config, init_run
+from ggl.utils.wandb import create_slurm_config, init_run
 
 
 def build_dummy_dataset(
@@ -167,7 +167,7 @@ def main(args: argparse.Namespace) -> None:
             "true_bias": args.true_bias,
             "epochs": args.epochs,
             "lr": args.lr,
-            **create_wandb_config(),
+            **create_slurm_config(),
         },
     )
 
