@@ -4,7 +4,7 @@
 # pyproject.toml, uv.lock, and .python-version files.
 #
 # Usage from the project's root directory:
-#   ./cli/utils/create_environment.sh
+#   ./cli/utils/build_environment.sh
 
 set -e
 
@@ -25,6 +25,9 @@ fi
 # the dependencies from pyproject.toml and uv.lock. uv sync also installs the
 # local project in editable mode, using its current name from pyproject.toml.
 uv sync
+
+# Install Claude Code
+curl -fsSL https://claude.ai/install.sh | bash
 
 # Create local settings without overwriting existing credentials.
 if [ ! -e .env ]; then

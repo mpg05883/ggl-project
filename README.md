@@ -42,7 +42,7 @@ You will also need to fill in the `TODO:` items in `AGENTS.md` and this README, 
 Assumes `/init-project` has been run. Run all commands from the repo root.
 
 ```bash
-./cli/utils/create_environment.sh   # install uv (if needed) and create .venv
+./cli/utils/build_environment.sh    # install uv (if needed) and create .venv
 uv sync --extra dev                 # install dependencies, including pytest and ruff
 ```
 
