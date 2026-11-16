@@ -91,7 +91,7 @@ Project overview. They do not count as TODOs to fill in.
 
 9. Show the full `git diff` (and `git status` for new or renamed files).
 
-9. Cleanup, in two parts:
+10. Cleanup, in two parts:
    - Always: remove from `README.md` the `[!IMPORTANT]` callout under the title and the whole "Starting a New Project"
      section (through the line before the next `##` heading). Delete the example experiment folders
      (`experiments/2026-01-01_example/`, `cli/2026-01-01_example/`) only if the user asks.
