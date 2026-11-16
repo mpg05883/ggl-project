@@ -62,13 +62,10 @@ ensure_marketplace thedotmack/claude-mem thedotmack
 npx --yes "skills@$SKILLS_CLI_VERSION" add vercel-labs/skills \
     --skill find-skills --global --agent claude-code --yes --copy
 npx --yes "skills@$SKILLS_CLI_VERSION" add \
-    rebelytics/one-skill-to-rule-them-all \
-    --skill task-observer --global --agent claude-code --yes --copy
 PLOTS_SOURCE="https://github.com/Microck/ordinary-claude-skills"
 PLOTS_SOURCE+="/tree/main/skills_all/data-viz-plots"
 npx --yes "skills@$SKILLS_CLI_VERSION" add "$PLOTS_SOURCE" \
     --skill data-viz-plots --global --agent claude-code --yes --copy
 
 echo "Installed Claude Code plugins and skills for the current user."
-node "$SCRIPT_DIR/configure_task_observer.mjs" --agent claude-code
 echo "Restart Claude Code to load the new extensions."

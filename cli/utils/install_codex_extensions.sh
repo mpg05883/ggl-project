@@ -59,12 +59,9 @@ npx --yes "claude-mem@$CLAUDE_MEM_VERSION" install \
 npx --yes "skills@$SKILLS_CLI_VERSION" add vercel-labs/skills \
     --skill find-skills --global --agent codex --yes --copy
 npx --yes "skills@$SKILLS_CLI_VERSION" add \
-    rebelytics/one-skill-to-rule-them-all \
-    --skill task-observer --global --agent codex --yes --copy
 PLOTS_SOURCE="https://github.com/Microck/ordinary-claude-skills"
 PLOTS_SOURCE+="/tree/main/skills_all/data-viz-plots"
 npx --yes "skills@$SKILLS_CLI_VERSION" add "$PLOTS_SOURCE" \
     --skill data-viz-plots --global --agent codex --yes --copy
 
-node "$SCRIPT_DIR/configure_task_observer.mjs" --agent codex
 echo "Installed Codex extensions. Start a new chat and review /hooks."
