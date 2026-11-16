@@ -37,7 +37,10 @@ Project overview. They do not count as TODOs to fill in.
    - Batch 3: compute and tracking.
      - Where does it run? Options: "Cluster only", "Local and cluster", and "Local only". For either cluster
        option, ask which cluster, and which partition and account the `cli/` scripts should default to.
-     - Where do results, checkpoints and large outputs go (a persistent path)?
+     - Where do results, checkpoints and large outputs go (a persistent path)? Options: "Under each experiment's
+       directory (`experiments/<experiment>/results/`)", "`results/` inside the repo", and "Skip". The user can
+       type another path in "Other". If they pick the per-experiment option, write the Outputs line as
+       "`experiments/<experiment>/results/` inside each experiment's folder".
      - Experiment tracker: keep Weights & Biases, use a different one (which), or none?
    - Batch 4: project-specific gotchas and data-integrity rules (the file already has generic leakage examples; show
      them as context), whether the project needs a `scripts/` directory, and whether to keep each *(default)* rule in
