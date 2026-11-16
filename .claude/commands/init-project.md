@@ -13,14 +13,25 @@ Project overview. They do not count as TODOs to fill in.
 1. Read `AGENTS.md` and `README.md` and list every remaining `TODO:` line, ignoring the machinery lines.
 
 2. Ask the questions in four batches, not one per TODO. Every question accepts "Skip / I don't know" as an answer.
-   - Use the AskUserQuestion tool only for a question with at least two real choices (for example, the
-     recommended project name and "Skip", or W&B / other tracker / none). Each such question needs 2-4 options.
-   - Ask free-text questions (overview, email, datasets, paths, gotchas) as plain numbered questions in the chat,
-     not through AskUserQuestion. AskUserQuestion rejects the whole call if any question has fewer than two
-     options, so never put a question whose only option is "Skip" into it.
-   - If AskUserQuestion is not available, ask every question as plain numbered text.
-   - Batch 1: the project name (recommended default: the GitHub repo name, see step 5), a 2-4 line overview of what the project is, and the email for `#SBATCH --mail-user=`
-     (skip it if the project is local only).
+   - Ask every question in a dialog box with the AskUserQuestion tool, one tool call per batch (at most four
+     questions per call; split a larger batch into several calls). Do not ask any batch question as chat text:
+     the dialog hides the chat, so chat questions go unseen and the run looks like it stopped.
+   - AskUserQuestion rejects the whole call if any question has fewer than two options. Give every question
+     2-4 options: "Skip / I don't know" plus at least one real choice. The dialog adds an "Other" box for typed
+     answers automatically, so don't add your own "Other" option. For free-text questions, say in the question
+     text to type the answer in "Other".
+   - Second options for free-text questions (use these, or something equally concrete from the repo):
+     overview: a 2-4 line draft built from the repo name, `README.md` and `gh repo view` (mark it as a draft);
+     email: "mike.gee@yale.edu (Recommended)" as the first option, and "Local only (no email)"; datasets
+     and components: "None yet"; output path: "`results/` inside the repo"; gotchas: "Keep the generic examples as written".
+   - Use an option's text only if the user picks it. A typed "Other" answer replaces the options.
+   - After a batch's dialog returns, call AskUserQuestion for the next batch right away, in the same turn.
+     Do not end the turn between batches. After Batch 4, continue with step 3.
+   - If AskUserQuestion is not available, ask each batch as plain numbered questions in one chat message and
+     wait for the reply.
+   - Batch 1: the project name (recommended default: the GitHub repo name, see step 5; resolve it before asking),
+     a 2-4 line overview of what the project is, and the email for `#SBATCH --mail-user=`
+     (skip it if the project is local only). Resolve the repo name, README and git email before the dialog.
    - Batch 2: the data and the main components (which datasets; which models or modules).
    - Batch 3: compute and tracking.
      - Where does it run: a cluster (which one) or local only? If a cluster, which partition and account should the
@@ -54,8 +65,8 @@ Project overview. They do not count as TODOs to fill in.
      `origin` remote URL (`git remote get-url origin`, last path segment without `.git`). If neither works, derive it
      from the project name given in Batch 1 the same way.
    - Make sure the result is Python-safe: letters, digits and underscores only (replace any other character with an
-     underscore), not starting with a digit, not a Python keyword. Confirm it with the user before renaming anything,
-     offering the default as the recommended option.
+     underscore), not starting with a digit, not a Python keyword. The Batch 1 answer is the confirmation.
+     Ask again only if the answer needed changes to become Python-safe.
    - Rename every whole-word `ggl`: `src/ggl/`, `tests/ggl/`, `cli/tests/ggl.sh` (use `git mv`), imports,
      `pyproject.toml` (project name and the hatch `packages` entry), `AGENTS.md` (title and layout), `README.md`,
      and the files under `experiments/`. Find them with `grep -rIlw ggl . --exclude-dir=.git --exclude-dir=.venv
