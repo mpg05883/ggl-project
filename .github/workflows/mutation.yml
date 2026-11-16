@@ -1,0 +1,57 @@
+name: mutation
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"  # Monday 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mutation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mutmut:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          python-version: "3.12"
+      - name: Install dependencies
+        run: uv sync --locked
+      - name: Check baseline tests
+        run: uv run --locked pytest
+      - name: Run mutmut
+        id: mutation
+        # Report only: surviving mutants do not block a merge.
+        continue-on-error: true
+        run: uv run --locked mutmut run 2>&1 | tee mutmut-run.log
+      - name: Write results
+        if: >-
+          ${{ always() && (steps.mutation.outcome == 'success' ||
+          steps.mutation.outcome == 'failure') }}
+        env:
+          MUTATION_OUTCOME: ${{ steps.mutation.outcome }}
+        run: |
+          uv run --locked mutmut results > mutmut-results.txt
+          {
+            echo '## mutmut results'
+            echo "Run outcome: $MUTATION_OUTCOME"
+            echo '```'
+            cat mutmut-results.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Save mutation reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: mutmut-results
+          path: |
+            mutmut-results.txt
+            mutmut-run.log
+          if-no-files-found: ignore
