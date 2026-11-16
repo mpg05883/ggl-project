@@ -23,7 +23,8 @@ Project overview. They do not count as TODOs to fill in.
    - Second options for free-text questions (use these, or something equally concrete from the repo):
      overview: a 2-4 line draft built from the repo name, `README.md` and `gh repo view` (mark it as a draft);
      email: "mike.gee@yale.edu (Recommended)" as the first option, and "Local only (no email)"; datasets
-     and components: "None yet"; output path: "`results/` inside the repo"; gotchas: "Keep the generic examples as written".
+     and components: "None yet"; output path: "`results/` inside the repo"; gotchas: "Keep the generic
+     examples as written".
    - Use an option's text only if the user picks it. A typed "Other" answer replaces the options.
    - After a batch's dialog returns, call AskUserQuestion for the next batch right away, in the same turn.
      Do not end the turn between batches. After Batch 4, continue with step 3.
@@ -34,8 +35,8 @@ Project overview. They do not count as TODOs to fill in.
      (skip it if the project is local only). Resolve the repo name, README and git email before the dialog.
    - Batch 2: the data and the main components (which datasets; which models or modules).
    - Batch 3: compute and tracking.
-     - Where does it run: a cluster (which one) or local only? If a cluster, which partition and account should the
-       `cli/` scripts default to?
+     - Where does it run? Options: "Cluster only", "Local and cluster", and "Local only". For either cluster
+       option, ask which cluster, and which partition and account the `cli/` scripts should default to.
      - Where do results, checkpoints and large outputs go (a persistent path)?
      - Experiment tracker: keep Weights & Biases, use a different one (which), or none?
    - Batch 4: project-specific gotchas and data-integrity rules (the file already has generic leakage examples; show
@@ -52,8 +53,11 @@ Project overview. They do not count as TODOs to fill in.
      the data, the main components), keeping it consistent with the Project overview in `AGENTS.md`. If those answers
      were skipped, leave the README TODO in place.
    - Compute: if local only, delete the "Cluster rules" section from `AGENTS.md` and the `sbatch` and interactive-node
-     lines from the README. If a cluster was named, update the partition, account and resource defaults in the headers
-     of `cli/utils/start_interactive_*.sh` and `cli/<example>/run.sh`, and show those edits to the user.
+     lines from the README. If local and cluster, keep that section and those lines, and write the Compute line
+     as "local and <cluster>". If a cluster was named (cluster only, or local and cluster), remove "Skip this
+     section if the project is local only." from "Cluster rules", update the partition, account and resource
+     defaults in the headers of `cli/utils/start_interactive_*.sh` and `cli/<example>/run.sh`, and show those edits
+     to the user.
    - Mail: set `#SBATCH --mail-user=` in every `cli/**/run.sh` to the email given.
    - Tracker: if not W&B, tell the user which files reference it (`src/ggl/utils/wandb.py`, its test, the `--real`
      handling in `cli/` scripts) and ask before changing any of them.
