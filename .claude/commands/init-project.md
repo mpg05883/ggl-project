@@ -61,7 +61,7 @@ Project overview. They do not count as TODOs to fill in.
 6. Set up Codecov using `docs/codecov.md` after renaming the package:
    - Keep coverage enabled by default. Confirm that the default dev group includes
      `pytest-cov`, coverage targets `src/`, and CI uploads `coverage.xml`
-     with Codecov OIDC authentication. Preserve the local report artifact.
+     with Codecov OIDC authentication.
    - Follow the repository connection and verification steps in the guide.
      Record the new repository's dashboard URL in the README.
    - Generate the local coverage report and report the measured coverage.

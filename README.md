@@ -152,25 +152,24 @@ workflows. Enable GitHub Actions in the new repository if organization
 settings disable them.
 
 1. **CI** (`.github/workflows/ci.yml`) runs on pull requests to `main`,
-   pushes to `main`, and manual requests. It checks lint, formatting, and
-   tests with branch coverage. Download `coverage.xml` from the `coverage`
-   artifact. CI also uploads the report to Codecov with GitHub OIDC
+   and pushes to `main`. It checks lint, formatting, and tests with branch
+   coverage. CI uploads the coverage report to Codecov with GitHub OIDC
    authentication; no `CODECOV_TOKEN` secret is required. `/init-project`
    follows the [Codecov setup guide](docs/codecov.md) to connect the new
    repository and verify its first upload. Account authorization can
    require a repository owner or organization administrator. Upload
-   failures do not fail CI; the coverage artifact remains available.
+   failures do not fail CI.
 2. **Mutation testing** (`.github/workflows/mutation.yml`) runs each Monday
    at 06:00 UTC and on manual requests. It changes source code temporarily
    and checks whether the tests detect each change. It reports surviving
-   changes without blocking merges. Baseline test failures still fail the
-   workflow. Read the run summary or download the `mutmut-results` artifact
-   for the results and execution log.
+   changes without blocking merges. Mutation run errors also do not fail
+   the job. Read the run summary or download the `mutmut-results` artifact
+   for the results.
 
-Both workflows use Python 3.12 and the committed `uv.lock`. Coverage and
+Both workflows install dependencies from the committed `uv.lock`. Coverage and
 mutation testing target `src/`, so package renaming with `/init-project`
-does not require workflow changes. Mutation testing starts without an old
-mutation cache to avoid reusing results from another source revision.
+does not require workflow changes. Mutation testing restores the `mutants`
+cache for the current commit, with a fallback to previous mutation caches.
 
 Run the same checks locally:
 
@@ -185,10 +184,11 @@ uv run --locked mutmut run
 uv run --locked mutmut results
 ```
 
-To verify the workflows on GitHub, open **Actions**, select **ci** or
+To verify CI, open a PR to `main` and inspect its `ci` check and Codecov
+upload step. To verify mutation testing, open **Actions**, select
 **mutation**, and click **Run workflow**. Select the branch containing the
-workflows and confirm that the run produces its report artifact. Manual
-runs require the workflow file to exist on the default branch first.
+workflow and confirm that the run produces its results artifact. Manual
+runs require the mutation workflow file to exist on the default branch first.
 Repository rules requiring the `ci` check are configured separately in
 GitHub settings; template files do not enable those rules automatically.
 

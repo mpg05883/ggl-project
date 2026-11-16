@@ -10,7 +10,7 @@ the template repository itself just to configure coverage.
    If no GitHub remote exists, leave connection pending until one exists.
 2. Confirm that `pyproject.toml` includes `pytest-cov` in the default dev group
    and `[tool.coverage.run]` targets `src/` with branch coverage enabled.
-   Confirm CI generates `coverage.xml`, saves the coverage artifact, and
+   Confirm CI generates `coverage.xml` and
    runs `codecov/codecov-action` with `use_oidc: true` and job permission
    `id-token: write`. Keep `fail_ci_if_error: false` so a service failure
    does not block the test checks. If the dependency is missing, add it
@@ -41,9 +41,8 @@ the template repository itself just to configure coverage.
    This URL can include a badge access token; never reuse MTBench's token
    or substitute an upload token. If badge access is unavailable, keep
    the new repository's URL and report the private badge as pending.
-5. After the user publishes the changes, open GitHub **Actions**, select
-   **ci**, and click **Run workflow**. The workflow must first exist on
-   the default branch. Confirm the upload step succeeds, then open the
+5. After the user publishes the changes and opens a PR to `main`, open
+   its `ci` check on GitHub. Confirm the upload step succeeds, then open the
    Codecov dashboard and confirm coverage for the same commit. Do not
    push, commit, or change repository rules as part of `/init-project`.
    If the first CI run has not happened, report remote verification as
