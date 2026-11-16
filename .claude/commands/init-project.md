@@ -12,8 +12,13 @@ Project overview. They do not count as TODOs to fill in.
 
 1. Read `AGENTS.md` and `README.md` and list every remaining `TODO:` line, ignoring the machinery lines.
 
-2. Ask the questions in four batches, not one per TODO. Use the AskUserQuestion tool if it is available; otherwise
-   use plain numbered questions. Every question needs a "Skip / I don't know" option.
+2. Ask the questions in four batches, not one per TODO. Every question accepts "Skip / I don't know" as an answer.
+   - Use the AskUserQuestion tool only for a question with at least two real choices (for example, the
+     recommended project name and "Skip", or W&B / other tracker / none). Each such question needs 2-4 options.
+   - Ask free-text questions (overview, email, datasets, paths, gotchas) as plain numbered questions in the chat,
+     not through AskUserQuestion. AskUserQuestion rejects the whole call if any question has fewer than two
+     options, so never put a question whose only option is "Skip" into it.
+   - If AskUserQuestion is not available, ask every question as plain numbered text.
    - Batch 1: the project name (recommended default: the GitHub repo name, see step 5), a 2-4 line overview of what the project is, and the email for `#SBATCH --mail-user=`
      (skip it if the project is local only).
    - Batch 2: the data and the main components (which datasets; which models or modules).
