@@ -80,7 +80,7 @@ Exceptions: explain fully when asked to explain. Confirm before destructive acti
 EOF
 fi
 
-# Install the additional Codex plugins and enable Task Observer by default.
+# Install the additional Codex plugins.
 bash "$SCRIPT_DIR/install_codex_extensions.sh"
 
 # Create local settings without overwriting existing credentials.

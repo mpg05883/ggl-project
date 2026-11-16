@@ -61,7 +61,7 @@ Add development tools with `uv add --dev <package>` and commit `uv.lock`.
 The environment builder installs these extensions for Claude Code and Codex,
 the current user across projects: [find-skills][find-skills],
 [Superpowers][superpowers], [Claude-Mem][claude-mem],
-[Task Observer][task-observer], and [data-viz-plots][data-viz-plots].
+and [data-viz-plots][data-viz-plots].
 This step requires Node.js 22.20 or later and Git. It installs Bun if
 missing because Claude-Mem needs it. The plotting packages already belong
 to the Python environment.
@@ -73,27 +73,15 @@ bash cli/utils/install_claude_extensions.sh
 bash cli/utils/install_codex_extensions.sh
 ```
 
-Both installers enable Task Observer by default with user-level guidance
-and a `SessionStart` hook. The configuration preserves existing hooks and
-personal rules. Changed files receive a `.before-task-observer` backup.
-Both tools use one shared observation workspace at `~/.task-observer`,
-or an existing observation workspace under `~/.claude` or `~/.codex`.
-Set `TASK_OBSERVER_WORKSPACE` before installing to select another durable
-location. Proposed skill changes still require your approval. Restricted
-runs report pending observations in task output instead of blocking work.
-
 Verify the setup after installation:
 
 1. Restart Claude Code. Run `/plugin` and confirm Superpowers and
-   Claude-Mem appear under installed plugins. Start a new session and
-   confirm Task Observer runs without a manual `/task-observer` command.
-2. Start a new Codex chat. Open `/hooks` and review the new Task Observer
-   and Claude-Mem hook definitions. Codex requires you to trust new or
+   Claude-Mem appear under installed plugins.
+2. Start a new Codex chat. Open `/hooks` and review the new Claude-Mem
+   hook definitions. Codex requires you to trust new or
    changed hooks before they run; the installer does not bypass this.
-   Persistent `AGENTS.md` guidance also requests Task Observer activation.
-3. In that new Codex chat, confirm Task Observer uses the same workspace
-   as Claude Code. Invoke `$find-skills` or `$data-viz-plots` to verify
-   standalone skill discovery.
+3. In that new Codex chat, invoke `$find-skills` or `$data-viz-plots` to
+   verify standalone skill discovery.
 
 Claude-Mem's Codex installer registers its native plugin and capture hooks.
 It retains an existing provider configuration and uses upstream defaults
@@ -105,7 +93,6 @@ skill activation must be checked in a new session.
 [find-skills]: https://github.com/vercel-labs/skills/tree/main/skills/find-skills
 [superpowers]: https://github.com/obra/superpowers
 [claude-mem]: https://github.com/thedotmack/claude-mem
-[task-observer]: https://github.com/rebelytics/one-skill-to-rule-them-all
 [data-viz-plots]: https://github.com/Microck/ordinary-claude-skills/tree/main/skills_all/data-viz-plots
 
 `uv sync` installs the local project package in editable mode, so changes under
