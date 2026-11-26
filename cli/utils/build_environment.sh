@@ -39,6 +39,21 @@ node --version
 curl -fsSL https://claude.ai/install.sh | bash
 export PATH="$HOME/.local/bin:$PATH"
 
+# Install the GitHub CLI (gh) with mamba if it is not already on PATH.
+if command -v gh >/dev/null 2>&1; then
+    echo "gh already installed. Skipping." >&2
+elif command -v mamba >/dev/null 2>&1; then
+    mamba install -y -c conda-forge gh
+else
+    # No mamba: download the gh release binary into ~/.local (no root).
+    echo "mamba not found. Installing gh from GitHub releases..." >&2
+    GH_TAG=$(curl -fsSL https://api.github.com/repos/cli/cli/releases/latest \
+        | grep -o '"tag_name": *"v[0-9.]*"' | grep -o 'v[0-9.]*')
+    curl -fsSL "https://github.com/cli/cli/releases/download/$GH_TAG/gh_${GH_TAG#v}_linux_amd64.tar.gz" \
+        | tar -xz -C "$HOME/.local" --strip-components=1
+    gh --version
+fi
+
 # Install the i-have-adhd skill and make it always on
 claude plugin marketplace add ayghri/i-have-adhd
 claude plugin install i-have-adhd@i-have-adhd
